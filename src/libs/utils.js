@@ -386,7 +386,7 @@ export function formatTokenAmount(tokenAmount, fraction = 2, tokenDenom = 'uatom
 
 export function isTestnet() {
   return (window.location.hostname.startsWith('testnet')
-    || window.location.search.indexOf('testnet') > -1)
+    || window.location.search.indexOf('testnet') > -1 || window.location.hostname.indexOf('localhost') > -1 || window.location.hostname.indexOf('127.0.0.1') > -1)
 }
 
 export function formatToken(token, IBCDenom = {}, decimals = 2, withDenom = true) {
