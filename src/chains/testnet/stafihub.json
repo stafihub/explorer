@@ -1,5 +1,5 @@
 {
-    "chain_name": "stafi-hub-testnet",
+    "chain_name": "stafi-hub-devnet",
     "coingecko": "",
     "api": "https://test-rest-rpc1.stafihub.io",
     "sdk_version": "0.45.1",

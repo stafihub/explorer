@@ -1,5 +1,5 @@
 {
-    "chain_name": "stafi-iris-testnet",
+    "chain_name": "stafi-iris-devnet",
     "coingecko": "",
     "api": "https://test-iris-rest1.stafihub.io",
     "sdk_version": "0.44.2",
