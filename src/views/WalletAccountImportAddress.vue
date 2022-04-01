@@ -271,6 +271,18 @@
         </b-row>
       </tab-content>
     </form-wizard>
+
+    <b-alert
+      variant="danger"
+      :show="true"
+    >
+      <h4 class="alert-heading">
+        DISCLAIMER:
+      </h4>
+      <div class="alert-body">
+        <span>Some of those blockchains are not fully tested, Use at your own risk.</span>
+      </div>
+    </b-alert>
   </div>
 </template>
 
