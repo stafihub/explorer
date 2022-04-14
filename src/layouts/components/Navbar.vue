@@ -106,16 +106,33 @@
           </b-button>
         </template>
 
-        <!-- <b-dropdown-item
-          :to="{ name: 'portfolio' }"
-          class="d-none"
+        <b-dropdown-item
+          v-for="(item,k) in accounts"
+          :key="k"
+          :disabled="!item.address"
+          @click="updateDefaultWallet(item.wallet)"
         >
+          <div class="d-flex flex-column">
+            <span class="font-weight-bolder">{{ item.wallet }}
+              <b-avatar
+                v-if="item.wallet===walletName"
+                variant="success"
+                size="sm"
+              >
+                <feather-icon icon="CheckIcon" />
+              </b-avatar>
+            </span>
+            <small>{{ item.address ? formatAddr(item.address.addr) : `Not available on ${selected_chain.chain_name}` }}</small>
+          </div>
+        </b-dropdown-item>
+        <b-dropdown-item to="/wallet/import">
           <feather-icon
-            icon="PieChartIcon"
+            icon="PlusIcon"
             size="16"
           />
-          <span class="align-middle ml-50">Portofolio</span>
-        </b-dropdown-item> -->
+          <span class="align-middle ml-50">Import Address</span>
+        </b-dropdown-item>
+        <b-dropdown-divider />
 
         <b-dropdown-item :to="{ name: 'accounts' }">
           <feather-icon
@@ -155,7 +172,7 @@
 <script>
 import {
   BLink, BNavbarNav, BMedia, BMediaAside, BAvatar, BMediaBody, VBTooltip, BButton,
-  BDropdown, BDropdownItem,
+  BDropdown, BDropdownItem, BDropdownDivider,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
@@ -176,6 +193,7 @@ export default {
     BButton,
     BDropdown,
     BDropdownItem,
+    BDropdownDivider,
 
     // Navbar Components
     DarkToggler,
@@ -224,18 +242,31 @@ export default {
       }
       return [conf.api]
     },
+    accounts() {
+      let accounts = getLocalAccounts() || {}
+      accounts = Object.entries(accounts).map(v => ({ wallet: v[0], address: v[1].address.find(x => x.chain === this.selected_chain.chain_name) }))
+
+      if (accounts.length > 0) {
+        this.updateDefaultWallet(accounts[0].wallet)
+      }
+      return accounts.filter(x => x.address)
+    },
   },
   mounted() {
-    const accounts = Object.keys(getLocalAccounts() || {})
-    if (!this.$store.state.chains.defaultWallet && accounts.length > 0) {
-      this.$store.commit('setDefaultWallet', accounts[0])
-    }
+
   },
   methods: {
+    formatAddr(v) {
+      return v.substring(0, 10).concat('...', v.substring(v.length - 10))
+    },
+    updateDefaultWallet(v) {
+      this.$store.commit('setDefaultWallet', v)
+    },
     change(v) {
       this.index = v
       const conf = this.$store.state.chains.selected
       localStorage.setItem(`${conf.chain_name}-api-index`, v)
+      window.location.reload()
     },
     block() {
       const conf = this.$store.state.chains.selected

@@ -55,12 +55,16 @@ export default class ChainFetch {
     return true
   }
 
+  async getNodeInfo() {
+    return this.get('/node_info')
+  }
+
   async getLatestBlock(config = null) {
     const conf = config || this.getSelectedConfig()
     if (conf.chain_name === 'injective') {
       return ChainFetch.fetch('https://tm.injective.network', '/block').then(data => Block.create(commonProcess(data)))
     }
-    return this.get('/blocks/latest', config).then(data => Block.create(data))
+    return this.get(`/blocks/latest?${new Date().getTime()}`, config).then(data => Block.create(data))
   }
 
   async getBlockByHeight(height, config = null) {
@@ -75,8 +79,9 @@ export default class ChainFetch {
     return this.get('/cosmos/slashing/v1beta1/signing_infos?pagination.limit=500', config)
   }
 
-  async getTxs(hash) {
-    const ver = this.getSelectedConfig() ? this.config.sdk_version : '0.41'
+  async getTxs(hash, config = null) {
+    const conf = config || this.getSelectedConfig()
+    const ver = conf.sdk_version || '0.41'
     // /cosmos/tx/v1beta1/txs/{hash}
     if (ver && compareVersions(ver, '0.40') < 1) {
       return this.get(`/txs/${hash}`).then(data => WrapStdTx.create(data, ver))
@@ -324,11 +329,12 @@ export default class ChainFetch {
   }
 
   async getAllIBCDenoms(config = null) {
-    const sdkVersion = config ? config.sdk_version : this.config.sdk_version
+    const conf = config || this.getSelectedConfig()
+    const sdkVersion = conf.sdk_version
     if (compareVersions(sdkVersion, '0.44.2') < 0) {
-      return this.get('/ibc/applications/transfer/v1beta1/denom_traces?pagination.limit=500', config).then(data => commonProcess(data))
+      return this.get('/ibc/applications/transfer/v1beta1/denom_traces?pagination.limit=500', conf).then(data => commonProcess(data))
     }
-    return this.get('/ibc/apps/transfer/v1/denom_traces?pagination.limit=500', config).then(data => commonProcess(data))
+    return this.get('/ibc/apps/transfer/v1/denom_traces?pagination.limit=500', conf).then(data => commonProcess(data))
   }
 
   async getIBCDenomTrace(hash, config = null) {
@@ -384,6 +390,15 @@ export default class ChainFetch {
 
   static async fetchTokenQuote(symbol) {
     return ChainFetch.fetchCoinMarketCap(`/quote/${symbol}`)
+  }
+
+  // Simulate Execution of tx
+  async simulate(bodyBytes, config = null) {
+    const txString = toBase64(TxRaw.encode(bodyBytes).finish())
+    const txRaw = {
+      tx_bytes: txString,
+    }
+    return this.post('/cosmos/tx/v1beta1/simulate', txRaw, config)
   }
 
   // Tx Submit

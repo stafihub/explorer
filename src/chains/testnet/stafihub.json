@@ -6,12 +6,24 @@
     "coin_type": "",
     "min_tx_fee": "25000",
     "addr_prefix": "stafi",
-    "logo": "https://dl.airtable.com/.attachments/275a6cbdbdc911856556e716a60d6ec4/87addd7f/terra.jpg",
+    "logo": "/logos/stafihub.png",
     "assets": [{
         "base": "ufis",
         "symbol": "FIS",
         "exponent": "6",
         "coingecko_id": "", 
-        "logo": "https://dl.airtable.com/.attachments/275a6cbdbdc911856556e716a60d6ec4/87addd7f/terra.jpg"
+        "logo": "/logos/stafihub.png"
+    },{
+        "base": "uratom",
+        "symbol": "rATOM",
+        "exponent": "6",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
+    },{
+        "base": "uriris",
+        "symbol": "rIRIS",
+        "exponent": "6",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
     }]
 }

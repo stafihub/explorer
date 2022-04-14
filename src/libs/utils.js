@@ -337,14 +337,14 @@ export function formatTokenDenom(tokenDenom) {
         if (asset) denom = asset.symbol
       }
     })
-    return denom.startsWith('ibc') ? `IBC...${denom.substring(denom.length - 3)}` : denom.toUpperCase()
+    return denom.length > 10 ? `${denom.substring(0, 7).toUpperCase()}..${denom.substring(denom.length - 3)}` : denom.toUpperCase()
   }
   return ''
 }
 
 export function getUnitAmount(amount, tokenDenom) {
   const denom = tokenDenom.denom_trace ? tokenDenom.denom_trace.base_denom : tokenDenom
-  let exp = 6
+  let exp = String(denom).startsWith('gravity') ? 18 : 6
   const config = Object.values(getLocalChains())
 
   config.forEach(x => {
@@ -363,11 +363,10 @@ export function numberWithCommas(x) {
   return parts.join('.')
 }
 
-export function formatTokenAmount(tokenAmount, fraction = 2, tokenDenom = 'uatom', format = true) {
+export function formatTokenAmount(tokenAmount, decimals = 2, tokenDenom = 'uatom', format = true) {
   const denom = tokenDenom.denom_trace ? tokenDenom.denom_trace.base_denom : tokenDenom
   let amount = 0
-
-  let exp = 6
+  let exp = String(denom).startsWith('gravity') ? 18 : 6
   const config = Object.values(getLocalChains())
 
   config.forEach(x => {
@@ -378,10 +377,10 @@ export function formatTokenAmount(tokenAmount, fraction = 2, tokenDenom = 'uatom
   })
   amount = Number(Number(tokenAmount)) / (10 ** exp)
   if (amount > 10) {
-    if (format) { return numberWithCommas(parseFloat(amount.toFixed(fraction))) }
-    return parseFloat(amount.toFixed(fraction))
+    if (format) { return numberWithCommas(parseFloat(amount.toFixed(decimals))) }
+    return parseFloat(amount.toFixed(decimals))
   }
-  return parseFloat(amount.toFixed(fraction))
+  return parseFloat(amount.toFixed(exp))
 }
 
 export function isTestnet() {
@@ -391,10 +390,11 @@ export function isTestnet() {
 
 export function formatToken(token, IBCDenom = {}, decimals = 2, withDenom = true) {
   if (token) {
+    const denom = IBCDenom[token.denom] || token.denom
     if (withDenom) {
-      return `${formatTokenAmount(token.amount, decimals, token.denom)} ${formatTokenDenom(IBCDenom[token.denom] || token.denom)}`
+      return `${formatTokenAmount(token.amount, decimals, denom)} ${formatTokenDenom(denom)}`
     }
-    return formatTokenAmount(token.amount, decimals, token.denom)
+    return formatTokenAmount(token.amount, decimals, denom)
   }
   return token
 }

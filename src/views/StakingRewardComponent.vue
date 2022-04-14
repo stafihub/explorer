@@ -6,7 +6,7 @@
     <b-card-header>
       <b-card-title>Outstanding Rewards</b-card-title>
       <feather-icon
-        v-b-modal.withdraw-commission-window
+        v-b-modal.WithdrawCommission
         icon="MoreVerticalIcon"
         size="18"
         class="cursor-pointer"
@@ -76,7 +76,7 @@
     </b-card-body>
     <b-card-body class="pt-0">
       <b-button
-        v-b-modal.withdraw-commission-window
+        v-b-modal.WithdrawCommission
         block
         size="sm"
         variant="primary"
@@ -84,9 +84,11 @@
         Withdraw Commission
       </b-button>
     </b-card-body>
-    <operation-withdraw-commission-component
-      :validator-address="validator"
+    <operation-modal
+      type="WithdrawCommission"
+      modal-id="WithdrawCommission"
       :address="address"
+      :validator-address="validator"
     />
   </b-card>
 </template>
@@ -95,10 +97,8 @@
 import {
   BCard, BCardHeader, BCardTitle, BCardBody, BMediaBody, BMedia, BMediaAside, BAvatar, BButton,
 } from 'bootstrap-vue'
-import { sha256 } from '@cosmjs/crypto'
-import { toHex } from '@cosmjs/encoding'
 import { formatToken, numberWithCommas } from '@/libs/utils'
-import OperationWithdrawCommissionComponent from './OperationWithdrawCommissionComponent.vue'
+import OperationModal from '@/views/components/OperationModal/index.vue'
 
 export default {
   components: {
@@ -111,7 +111,7 @@ export default {
     BMedia,
     BMediaAside,
     BAvatar,
-    OperationWithdrawCommissionComponent,
+    OperationModal,
   },
   props: {
     data: {
@@ -129,16 +129,12 @@ export default {
   },
   data() {
     return {
-      denoms: {},
     }
   },
-  created() {
-    this.$http.getAllIBCDenoms().then(x => {
-      x.denom_traces.forEach(trace => {
-        const hash = toHex(sha256(new TextEncoder().encode(`${trace.path}/${trace.base_denom}`)))
-        this.$set(this.denoms, `ibc/${hash.toUpperCase()}`, trace.base_denom)
-      })
-    })
+  computed: {
+    denoms() {
+      return this.$store.state.chains.denoms
+    },
   },
   methods: {
     formatNumber(value) {
