@@ -1,15 +1,15 @@
 {
-    "chain_name": "stafi-irisnet-devnet",
+    "chain_name": "cosmos-testnet",
     "coingecko": "",
-    "api": "https://test-iris-rest1.stafihub.io",
-    "sdk_version": "0.44.2",
+    "api": "https://test-cosmos-rest1.stafihub.io",
+    "sdk_version": "0.45.3",
     "coin_type": "",
     "min_tx_fee": "25000",
-    "addr_prefix": "iaa",
+    "addr_prefix": "cosmos",
     "logo": "/logos/stafihub.png",
     "assets": [{
-        "base": "uiris",
-        "symbol": "IRIS",
+        "base": "uatom",
+        "symbol": "ATOM",
         "exponent": "6",
         "coingecko_id": "", 
         "logo": "/logos/stafihub.png"
