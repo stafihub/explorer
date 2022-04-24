@@ -24,7 +24,11 @@ configs.keys().forEach(k => {
 
 chains = update
 localStorage.setItem('chains', JSON.stringify(update))
-const selected = chains.cosmos
+
+let selected = chains['stafi-hub']
+if (isTestnet()) {
+  selected = chains['stafi-hub-testnet']
+}
 
 const avatarcache = localStorage.getItem('avatars')
 
