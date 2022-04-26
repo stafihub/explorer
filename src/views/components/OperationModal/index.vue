@@ -376,7 +376,12 @@ export default {
       this.$refs.simpleRules.validate().then(ok => {
         if (ok) {
           this.sendTx().then(ret => {
-            this.error = ret
+            if (ret) {
+              this.error = ret
+            }
+            if (this.error) {
+              this.showDismissibleAlert = true
+            }
           })
         }
       })
