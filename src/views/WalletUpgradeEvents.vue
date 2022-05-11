@@ -8,25 +8,26 @@
         md="12"
       >
         <b-card :bg-variant="p.variant">
-          <b-card-title
-            class="mb-0"
-          >
+          <b-card-title class="mb-1">
             <b-avatar
+              v-b-tooltip.hover
               :src="p.chain.logo"
+              :title="p.chain.chain_name"
               variant="light-primary"
               size="22"
             />
-            <span class="text-uppercase"> {{ p.chain.chain_name }}</span>
-            <br>
             #{{ p.id }}.
             <router-link
               :to="`/${p.chain.chain_name}/gov/${p.id}?from=/wallet/votes`"
             >
               {{ p.title }} {{ p.status }}
-            </router-link></b-card-title>
-          <b-card-body md="12">
-            <flip-countdown :deadline="p.countdown" />
-          </b-card-body>
+            </router-link>
+          </b-card-title>
+          <flip-countdown
+            :deadline="p.countdown"
+            countdown-size="28px"
+            label-size="12px"
+          />
         </b-card>
       </b-col>
     </b-row>
@@ -36,7 +37,7 @@
 <script>
 import { getLocalAccounts, getLocalChains } from '@/libs/utils'
 import {
-  BRow, BCol, BCard, BCardTitle, BCardBody, BAvatar,
+  BRow, BCol, BCard, BCardTitle, BAvatar, VBTooltip,
 } from 'bootstrap-vue'
 import FlipCountdown from 'vue2-flip-countdown'
 import dayjs from 'dayjs'
@@ -49,8 +50,10 @@ export default {
     BCol,
     BCard,
     BCardTitle,
-    BCardBody,
     FlipCountdown,
+  },
+  directives: {
+    'b-tooltip': VBTooltip,
   },
   props: {
     content: {
