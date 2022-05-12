@@ -1,0 +1,17 @@
+{
+    "chain_name": "irisnet-testnet",
+    "coingecko": "",
+    "api": "https://test-iris-rest1.stafihub.io",
+    "sdk_version": "0.44.2",
+    "coin_type": "118",
+    "min_tx_fee": "25000",
+    "addr_prefix": "iaa",
+    "logo": "/logos/stafihub.png",
+    "assets": [{
+        "base": "uiris",
+        "symbol": "IRIS",
+        "exponent": "6",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
+    }]
+}
