@@ -17,7 +17,9 @@ import RIPEMD160 from 'ripemd160'
 import localeData from 'dayjs/plugin/localeData'
 import { $themeColors } from '@themeConfig'
 // import { SigningStargateClient } from '@cosmjs/stargate'
-import PingWalletClient from './data/signing'
+// import PingWalletClient from './data/signing'
+import { SigningStargateClient } from '@cosmjs/stargate'
+import { getSigningClient } from './client/PingWalletClient.ts'
 import { EthereumLedgerSigner } from './client/EthereumLedgerSigner.ts'
 
 dayjs.extend(localeData)
@@ -212,6 +214,9 @@ async function getLedgerAppName(coinType, device, hdpath) {
     case 852:
       ledgerAppName = 'Desmos' // 'Desmos'
       break
+    case 330:
+      ledgerAppName = 'Terra' // 'Terra'
+      break
     case 118:
     default:
   }
@@ -220,46 +225,31 @@ async function getLedgerAppName(coinType, device, hdpath) {
 }
 
 export async function sign(device, chainId, signerAddress, messages, fee, memo, signerData) {
-  // let transport
-  let signer
   const hdpath = getHdPath(signerAddress)
-  const coinType = Number(hdpath[1])
-  // const ledgerName = getLedgerAppName(coinType)
-  switch (device) {
-    case 'ledgerBle':
-    // transport = await TransportWebBLE.create()
-    // signer = new LedgerSigner(transport, { hdPaths: [hdpath], ledgerAppName: ledgerName })
-      signer = await getLedgerAppName(coinType, device, hdpath)
-      break
-    case 'ledgerUSB':
-      // transport = await TransportWebUSB.create()
-      // signer = new LedgerSigner(transport, { hdPaths: [hdpath], ledgerAppName: ledgerName })
-      signer = await getLedgerAppName(coinType, device, hdpath)
-      break
-    case 'keplr':
-    default:
-      if (!window.getOfflineSigner || !window.keplr) {
-        throw new Error('Please install keplr extension')
-      }
-      await window.keplr.enable(chainId)
-      // signer = window.getOfflineSigner(chainId)
-      signer = window.getOfflineSignerOnlyAmino(chainId)
+  let client
+  if (device.startsWith('ledger')) {
+    client = await getSigningClient(device, hdpath)
+  } else {
+    if (!window.getOfflineSigner || !window.keplr) {
+      throw new Error('Please install keplr extension')
+    }
+    await window.keplr.enable(chainId)
+    const signer = window.getOfflineSignerOnlyAmino(chainId)
+    client = await SigningStargateClient.offline(signer)
   }
-
-  // Ensure the address has some tokens to spend
-  const client = await PingWalletClient.offline(signer)
-  // const client = await SigningStargateClient.offline(signer)
-  return client.signAmino2(device.startsWith('ledger') ? toSignAddress(signerAddress) : signerAddress, messages, fee, memo, signerData)
-  // return signDirect(signer, signerAddress, messages, fee, memo, signerData)
+  // let transport
+  // let signer
+  // const hdpath = getHdPath(signerAddress)
+  const coinType = Number(hdpath[1])
+  const addr = device.startsWith('ledger') && coinType === 118 ? toSignAddress(signerAddress) : signerAddress
+  return client.sign(addr, messages, fee, memo, signerData)
 }
 
 export async function getLedgerAddress(transport = 'blu', hdPath = "m/44'/118/0'/0/0") {
   const protocol = transport === 'usb' ? await TransportWebUSB.create() : await TransportWebBLE.create()
   // extract Cointype from from HDPath
   const coinType = Number(stringToPath(hdPath)[1])
-  // const ledgerName = getLedgerAppName(coinType)
-  // const signer = new LedgerSigner(trans, { hdPaths: [stringToPath(hdPath)], ledgerAppName: ledgerName })
-  const signer = await getLedgerAppName(coinType, protocol, hdPath)
+  const signer = await getLedgerAppName(coinType, protocol, stringToPath(hdPath))
   return signer.getAccounts()
 }
 
