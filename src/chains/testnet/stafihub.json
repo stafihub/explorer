@@ -2,7 +2,7 @@
     "chain_name": "stafi-hub-devnet",
     "coingecko": "",
     "api": "https://dev-rest1.stafihub.io",
-    "sdk_version": "0.45.4",
+    "sdk_version": "0.45.6",
     "coin_type": "118",
     "min_tx_fee": "25000",
     "addr_prefix": "stafi",
