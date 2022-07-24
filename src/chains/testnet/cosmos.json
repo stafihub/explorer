@@ -1,8 +1,9 @@
 {
     "chain_name": "cosmos-testnet",
     "coingecko": "",
-    "api": "https://test-cosmos-rest1.stafihub.io",
-    "sdk_version": "0.45.3",
+    "api": ["https://test-cosmos-rest1.stafihub.io"],
+    "rpc": ["https://test-cosmos-rpc1.stafihub.io:443"],
+    "sdk_version": "0.45.4",
     "coin_type": "118",
     "min_tx_fee": "25000",
     "addr_prefix": "cosmos",
