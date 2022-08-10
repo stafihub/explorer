@@ -3,7 +3,7 @@
     "coingecko": "",
     "api": ["https://test-cosmos-rest1.stafihub.io"],
     "rpc": ["https://test-cosmos-rpc1.stafihub.io:443"],
-    "sdk_version": "0.45.4",
+    "sdk_version": "0.45.6",
     "coin_type": "118",
     "min_tx_fee": "25000",
     "addr_prefix": "cosmos",

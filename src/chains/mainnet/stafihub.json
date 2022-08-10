@@ -1,8 +1,8 @@
 {
-    "chain_name": "stafi-hub-testnet",
+    "chain_name": "stafi-hub",
     "coingecko": "",
-    "api": ["https://test-rest-rpc1.stafihub.io"],
-    "rpc": ["https://test-rpc1.stafihub.io:443"],
+    "api": ["https://mainnet-rest-rpc1.stafihub.io"],
+    "rpc": ["https://mainnet-rpc1.stafihub.io:443"],
     "sdk_version": "0.45.7",
     "coin_type": "118",
     "min_tx_fee": "25000",

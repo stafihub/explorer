@@ -19,6 +19,7 @@ if (isTestnet()) {
 const update = {}
 configs.keys().forEach(k => {
   const c = configs(k)
+  c.chain_name = String(c.chain_name).toLowerCase()
   update[c.chain_name] = c
 })
 
