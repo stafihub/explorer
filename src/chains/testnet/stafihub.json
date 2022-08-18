@@ -20,5 +20,17 @@
         "exponent": "6",
         "coingecko_id": "", 
         "logo": "/logos/stafihub.png"
+    },{
+        "base": "uriris",
+        "symbol": "rIRIS",
+        "exponent": "6",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
+    },{
+        "base": "urhuahua",
+        "symbol": "rHUAHUA",
+        "exponent": "6",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
     }]
 }
