@@ -47,6 +47,7 @@
             :balance="balance"
             :proposal-id="proposalId"
             :proposal-title="proposalTitle"
+            :to-address="toAddress"
             @update="componentUpdate"
           />
           <b-row v-if="advance">
@@ -263,6 +264,10 @@ export default {
       type: String,
       default: null,
     },
+    toAddress: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -309,7 +314,7 @@ export default {
     accounts() {
       const accounts = getLocalAccounts()
       const selectedWallet = this.$store.state.chains.defaultWallet
-      return accounts[selectedWallet]
+      return accounts ? accounts[selectedWallet] : null
     },
     isOwner() {
       if (this.accounts) {
@@ -324,9 +329,12 @@ export default {
       if (this.address) {
         return this.address
       }
-      const chain = this.$store.state.chains.selected.chain_name
-      const selectedAddress = this.accounts.address.find(x => x.chain === chain)
-      return selectedAddress?.addr
+      if (this.accounts) {
+        const chain = this.$store.state.chains.selected.chain_name
+        const selectedAddress = this.accounts?.address.find(x => x.chain === chain)
+        return selectedAddress?.addr
+      }
+      return null
     },
     selectedChain() {
       let config = null
@@ -355,8 +363,8 @@ export default {
           this.sequence = account.sequence
         })
         this.$http.getBankBalances(this.selectedAddress, this.selectedChain).then(res => {
-          if (res && res.length > 0) {
-            this.balance = res.reverse()
+          if (res.balances && res.balances.length > 0) {
+            this.balance = res.balances.reverse()
             const token = this.balance.find(i => !i.denom.startsWith('ibc'))
             this.token = token.denom
             if (token) this.feeDenom = token.denom
@@ -373,6 +381,22 @@ export default {
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault()
+      if (!this.fee) {
+        this.error = 'fee is required'
+        return
+      } if (!this.feeDenom) {
+        this.error = 'fee symbol is required'
+        return
+      } if (!this.accountNumber) {
+        this.error = 'Account number is required'
+        return
+      } if (!this.sequence) {
+        this.error = 'Sequence is required'
+        return
+      } if (!this.chainId) {
+        this.error = 'Chain Id is required'
+        return
+      }
       this.$refs.simpleRules.validate().then(ok => {
         if (ok) {
           this.sendTx().then(ret => {
@@ -393,6 +417,7 @@ export default {
     },
     async sendTx() {
       const txMsgs = this.$refs.component.msg
+
       if (txMsgs.length === 0) {
         this.error = 'No delegation found'
         return ''

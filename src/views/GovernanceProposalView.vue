@@ -49,14 +49,7 @@
         >
           <tbody>
             <b-tr>
-              <b-td
-                style="text-transform: capitalize; vertical-align: top; width:200px"
-              >
-                {{ $t('proposal_id') }}
-              </b-td><b-td>{{ proposal.id }}</b-td>
-            </b-tr>
-            <b-tr>
-              <b-td>
+              <b-td style="text-transform: capitalize; vertical-align: top; width:200px">
                 {{ $t('proposal_proposer') }}
               </b-td><b-td><router-link :to="`../account/${proposer.proposer}`">
                 {{ formatAddress(proposer.proposer) }}
@@ -77,13 +70,6 @@
                 {{ $t('voting_time') }}
               </b-td><b-td>{{ formatDate(proposal.voting_start_time) }} - {{ formatDate(proposal.voting_end_time) }}</b-td>
             </b-tr>
-            <b-tr>
-              <b-td>
-                {{ $t('proposal_type') }}
-              </b-td><b-td>
-                {{ proposal.type }}
-              </b-td>
-            </b-tr>
           </tbody>
         </b-table-simple>
         <div>
@@ -91,7 +77,7 @@
             :tablefield="proposal.contents"
             :small="false"
           /></div>
-        <b-table-simple v-if="proposal.type === 'cosmos-sdk/SoftwareUpgradeProposal'">
+        <b-table-simple v-if="proposal.type.indexOf('SoftwareUpgrade') > 0">
           <b-tr>
             <b-td class="text-center">
               {{ $t('upgrade_time') }} {{ upgradeTime }}
@@ -278,7 +264,7 @@ import {
 import { Proposal, Proposer } from '@/libs/data'
 import dayjs from 'dayjs'
 import OperationModal from '@/views/components/OperationModal/index.vue'
-import ObjectFieldComponent from './ObjectFieldComponent.vue'
+import ObjectFieldComponent from './components/ObjectFieldComponent.vue'
 
 // import { formatToken } from '@/libs/data/data'
 
@@ -356,7 +342,7 @@ export default {
   },
   computed: {
     upgradeTime() {
-      if (this.proposal.type === 'cosmos-sdk/SoftwareUpgradeProposal') {
+      if (this.proposal.type.indexOf('SoftwareUpgrade') > 0) {
         if (Number(this.proposal?.contents.plan.height || 0) > 0 && this.latest?.block) {
           const blocks = Number(this.proposal.contents.plan.height) - Number(this.latest.block?.header?.height || 0)
           if (blocks > 0) {

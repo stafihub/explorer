@@ -15,7 +15,7 @@
         <b-td
           style="text-transform: capitalize; vertical-align: top;"
         >
-          {{ name }}
+          {{ formatTitle(name) }}
         </b-td>
         <b-td v-if="isTokenField(value)">
           {{ formatTokens( value ) }}
@@ -41,10 +41,9 @@
             <b-tab
               v-for="key in Object.keys(value)"
               :key="key"
-              :title="key"
-              class="pl-0 pr-0"
+              :title="formatTitle(key)"
+              class="p-0 text-capitalize"
               title-item-class="bg-light-primary"
-              style="padding: 0px;"
             >
               <array-field-component
                 v-if="Array.isArray(value[key])"
@@ -58,7 +57,10 @@
                 v-else-if="isObjectText(value[key])"
                 :tablefield="toObject(value[key])"
               />
-              <span v-else>{{ value[key] }}</span>
+              <div
+                v-else
+                style="max-width: 800px; max-height: 300px; overflow: auto;"
+              >{{ value[key] }}</div>
             </b-tab>
           </b-tabs>
         </b-td>
@@ -66,7 +68,10 @@
           <VueMarkdown v-if="name==='description'">
             {{ addNewLine(value) }}
           </VueMarkdown>
-          <span v-else>{{ value }}</span>
+          <div
+            v-else
+            style="max-width: 800px; max-height: 300px; overflow: auto;"
+          >{{ value }}</div>
         </b-td>
       </b-tr>
     </b-tbody>
@@ -129,6 +134,7 @@ export default {
       // }
       return value
     },
+    formatTitle: v => v.replaceAll('_', ' '),
     isObjectText(v) {
       return String(v).startsWith('{') && String(v).endsWith('}')
     },
@@ -140,16 +146,16 @@ export default {
       return Array.from(value)
     },
     isTokenField(value) {
-      return isToken(value)
+      return value ? isToken(value) : false
     },
     isHex(value) {
-      return isHexAddress(value)
+      return value ? isHexAddress(value) : false
     },
     formatHexAddress(v) {
       return getStakingValidatorByHex(this.$http.config.chain_name, v)
     },
     isArrayText(value) {
-      return isStringArray(value)
+      return value ? isStringArray(value) : false
     },
     formatTokens(value) {
       return tokenFormatter(value)
@@ -159,7 +165,7 @@ export default {
       if (percentage.test(value)) {
         return `${percent(value)}%`
       }
-      return value.replace(/(?:\\[rn])+/g, '\n')
+      return value ? value.replace(/(?:\\[rn])+/g, '\n') : '-'
     },
   },
 }

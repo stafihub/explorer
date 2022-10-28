@@ -3,7 +3,7 @@
     "coingecko": "",
     "api": ["https://test-iris-rest1.stafihub.io"],
     "rpc": ["https://test-iris-rpc1.stafihub.io:443"],
-    "sdk_version": "0.44.2",
+    "sdk_version": "0.44.5",
     "coin_type": "118",
     "min_tx_fee": "25000",
     "addr_prefix": "iaa",
