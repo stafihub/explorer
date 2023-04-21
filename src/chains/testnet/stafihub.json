@@ -32,5 +32,11 @@
         "exponent": "6",
         "coingecko_id": "", 
         "logo": "/logos/stafihub.png"
+    },{
+        "base": "urswth",
+        "symbol": "rSWTH",
+        "exponent": "8",
+        "coingecko_id": "", 
+        "logo": "/logos/stafihub.png"
     }]
 }
